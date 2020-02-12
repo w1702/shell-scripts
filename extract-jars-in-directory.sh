@@ -1,25 +1,31 @@
 #!/usr/bin/env bash
-# This script takes searches a directory for .jar files, for each .jar file found create a new directory and extract it's contents to it
+# This script takes a path to a directory as an arg {1}
+# Then searches that directory for .jar files
+# For each .jar file found, create a new directory and extract it's contents to it
 
-# Modify this to point to directory with jars
-PROJECT_TARGET_DIR='/Users/w1702/Projects/quicksilver/target'
-EXTRACTED_DIR_PREFIX='EX-'
+PROJECT_TARGET_DIR=${1}
+EXTRACTED_DIR_PREFIX='EXTRACTED-'
 
-echo "Project target directory set to: '${PROJECT_TARGET_DIR}'"
-cd ${PROJECT_TARGET_DIR}
+if [[ -d ${PROJECT_TARGET_DIR} ]]
+then
 
-for i in *.jar; do
-    extractedDir=${EXTRACTED_DIR_PREFIX}${i}
+    cd ${PROJECT_TARGET_DIR}
+    echo " - Scanning directory: '${PROJECT_TARGET_DIR}' for .jar files..."
 
-    echo " - Creating directory: '${extractedDir}'..."
-    mkdir ${extractedDir}
-    cd ${extractedDir}
+    for i in *.jar; do
+        extractedDir=${EXTRACTED_DIR_PREFIX}${i}
 
-    echo " - Extracting .jar files from ${i} into directory: '${extractedDir}'..."
-    jar xf ../${i}
+        mkdir ${extractedDir}
+        cd ${extractedDir}
 
-    cd ..
+        echo " -- Extracting .jar files from ${i} into new directory: '${extractedDir}'..."
+        jar xf ../${i}
 
-done
+        cd ..
 
-open .
+    done
+
+    open .
+else
+    echo " - Directory: '${PROJECT_TARGET_DIR}' does not exist"
+fi
